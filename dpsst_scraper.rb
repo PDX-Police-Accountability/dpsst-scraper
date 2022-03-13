@@ -4,7 +4,7 @@ require 'nokogiri'
 
 def officer_ids(filename = 'input-data/officers.csv')
   table = CSV.read(filename, { headers: true, col_sep: '|' })
-  table['DPSST']
+  table['DPSST'].sort
 end
 
 def html_from_browser(browser)

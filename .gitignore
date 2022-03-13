@@ -2,6 +2,7 @@
 
 /input-data
 /scraped-data
+/summary-data
 
 # Default .gitignore for Ruby projects on Github starts here...
 
