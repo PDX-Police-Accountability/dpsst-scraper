@@ -129,7 +129,7 @@ end
 # from stomping on previously downloaded data from the same
 # date.
 def date_suffix
-  '-D'
+  ''
 end
 
 def scrape_dpsst
