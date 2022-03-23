@@ -43,9 +43,18 @@ def save_screenshot(browser, dpsst_id, file_name_base, date)
   browser.screenshot(path: "#{output_directory(date)}/#{dpsst_id}-#{file_name_base}.png")
 end
 
-def scrape_one_officer_affiliation(dpsst_id, date, row_index)
-  n = row_index + 1
-  puts "Scraping dpsst_id #{dpsst_id}, row #{n}"
+# The only difference when looking at transcripts for the same
+# officer with a different agency affiliation is the top part
+# of the page which displays the officer's current status with
+# the agency.
+#
+# We scrape the index to find all of an officer's agency
+# affiliations and scrape the transcript associated with
+# the desired agency.
+#
+# We should wind up with 1 transcript html file for each officer.
+def scrape_one_officer_affiliation(dpsst_id, agency_name, date)
+  puts "Scraping dpsst_id: #{dpsst_id}, agency_name: #{agency_name}"
 
   url = "https://www.bpl-orsnapshot.net/PublicInquiry_CJ/EmployeeSearch.aspx"
   browser = Ferrum::Browser.new
@@ -60,12 +69,21 @@ def scrape_one_officer_affiliation(dpsst_id, date, row_index)
 
   browser.network.wait_for_idle
 
-  save_page_html(browser, dpsst_id, "index", date)
+  row_index = 1
+  rows = browser.css("table#gvwEmployees tr")
+  rows.each_with_index do |row, index|
+    if row.text.include?('Portland Police Bureau')
+      row_index = index
+      break
+    end
+  end
+
+  save_page_html(browser, dpsst_id, "index", date) if should_save_index_page?
 
   # Make sure the requested row exists. Sometimes we get back 0 rows.
   begin
     rows = browser.css("table#gvwEmployees tr")
-    row = rows[n]
+    row = rows[row_index]
     cell = row.css("td").first
     cell.click
 
@@ -93,59 +111,6 @@ def scrape_one_officer_affiliation(dpsst_id, date, row_index)
   browser.quit
 end
 
-# If an officer has multiple agency affiliations, we could
-# use this to scrape each of the individual transcripts.
-#
-# At this time, it looks like each transcript is exactly the
-# same.
-#
-# The only difference when looking at transcripts for the same
-# officer with a different agency affiliation is the top part
-# of the page which has redundant information from what is on
-# their index page.
-#
-# For now, we'll just scrape the transcript from the first
-# agency affiliation and we'll also scrape the index.
-#
-# So we should wind up with 2 html files for each officer:
-#
-# 1. index
-# 2. transcript
-def scrape_one_officer(dpsst_id, num_officer_agency_rows, date)
-  if num_officer_agency_rows > 0
-    scrape_one_officer_affiliation(dpsst_id, date, 0)
-  end
-end
-
-# Get the number of rows in the officer's table of Name, ID, Agency Name, Rank/Position, Status
-def scrape_one_officer_agency_row_count(dpsst_id)
-  url = "https://www.bpl-orsnapshot.net/PublicInquiry_CJ/EmployeeSearch.aspx"
-  browser = Ferrum::Browser.new
-  browser.go_to(url)
-
-  input = browser.at_xpath("//input[@id='rdoSearchOption_1']")
-  input.click
-
-  input = browser.at_xpath("//input[@id='txtNameSearch']")
-  input.focus.type(dpsst_id)
-  browser.at_css("#cmdSearch").click
-
-  browser.network.wait_for_idle
-
-  number_of_officer_agency_rows = 0
-
-  begin
-    rows = browser.css("table#gvwEmployees tr")
-    number_of_officer_agency_rows = rows.count - 1
-  rescue Ferrum::NodeNotFoundError
-    puts "===> No rows in table for dpsst id #{dpsst_id} (scrape_one_officer_agency_row_count)"
-  end
-
-  browser.quit
-
-  number_of_officer_agency_rows
-end
-
 def output_directory(date)
   directory = "scraped-data/#{date}"
 
@@ -154,16 +119,30 @@ def output_directory(date)
   directory
 end
 
-def scrape_dpsst
-  date = Date.today.to_s
+# For debugging purposes, return true to save the index page
+# along with each officer's transcript page.
+def should_save_index_page?
+  false
+end
 
-  # dpsst_ids = ["27981", "30864", "39600", "41483", "55152"]
-  # dpsst_ids = ["61103"]
+# For debugging purposes, return a non-empty string to keep
+# from stomping on previously downloaded data from the same
+# date.
+def date_suffix
+  '-D'
+end
+
+def scrape_dpsst
+  agency_name = 'Portland Police Bureau'
+  date = Date.today.to_s + date_suffix
+
+  # Uncomment this and comment the following for debugging
+  # subset of officers.
+  # dpsst_ids = ["27981", "33125", "39600", "41483", "55152"]
+
   dpsst_ids = officer_ids
 
   dpsst_ids.each do |dpsst_id|
-    num_officer_agency_rows = scrape_one_officer_agency_row_count(dpsst_id)
-
-    scrape_one_officer(dpsst_id, num_officer_agency_rows, date)
+    scrape_one_officer_affiliation(dpsst_id, agency_name, date)
   end
 end
