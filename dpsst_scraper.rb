@@ -103,9 +103,9 @@ def scrape_one_officer_affiliation(dpsst_id, agency_name, date)
     browser.network.wait_for_idle
 
     save_page_html(browser, dpsst_id, "transcript", date)
-  rescue StandardError
-    # save_screenshot(browser, dpsst_id, "#{n}-screenshot", date)
-    puts "===> No rows in table for dpsst id #{dpsst_id} (scrape_one_officer_affiliation)"
+  rescue StandardError => e
+    save_page_html(browser, dpsst_id, "transcript", date)
+    puts "===> Error scraping dpsst id #{dpsst_id}: #{e.inspect}"
   end
 
   browser.quit
