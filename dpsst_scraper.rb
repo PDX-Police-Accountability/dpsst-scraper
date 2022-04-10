@@ -58,30 +58,36 @@ def scrape_one_officer_affiliation(dpsst_id, agency_name, date)
 
   url = "https://www.bpl-orsnapshot.net/PublicInquiry_CJ/EmployeeSearch.aspx"
   browser = Ferrum::Browser.new
-  browser.go_to(url)
 
-  input = browser.at_xpath("//input[@id='rdoSearchOption_1']")
-  input.click
+  # TODO: Sometimes we get this while waiting for idle::
+  #
+  #       Timed out waiting for response.
+  #       It's possible that this happened because something took a very long time (for example a page load was slow).
+  #       If so, setting the :timeout option to a higher value might help. (Ferrum::TimeoutError)
 
-  input = browser.at_xpath("//input[@id='txtNameSearch']")
-  input.focus.type(dpsst_id)
-  browser.at_css("#cmdSearch").click
-
-  browser.network.wait_for_idle
-
-  row_index = 1
-  rows = browser.css("table#gvwEmployees tr")
-  rows.each_with_index do |row, index|
-    if row.text.include?('Portland Police Bureau')
-      row_index = index
-      break
-    end
-  end
-
-  save_page_html(browser, dpsst_id, "index", date) if should_save_index_page?
-
-  # Make sure the requested row exists. Sometimes we get back 0 rows.
   begin
+    browser.go_to(url)
+
+    input = browser.at_xpath("//input[@id='rdoSearchOption_1']")
+    input.click
+
+    input = browser.at_xpath("//input[@id='txtNameSearch']")
+    input.focus.type(dpsst_id)
+    browser.at_css("#cmdSearch").click # NOTE: Have seen Ferrum::TimeoutError here.
+
+    browser.network.wait_for_idle
+
+    row_index = 1
+    rows = browser.css("table#gvwEmployees tr")
+    rows.each_with_index do |row, index|
+      if row.text.include?('Portland Police Bureau')
+        row_index = index
+        break
+      end
+    end
+
+    save_page_html(browser, dpsst_id, "index", date) if should_save_index_page?
+
     rows = browser.css("table#gvwEmployees tr")
     row = rows[row_index]
     cell = row.css("td").first
@@ -101,14 +107,14 @@ def scrape_one_officer_affiliation(dpsst_id, agency_name, date)
     browser.network.wait_for_idle
     browser.at_css("input\##{transcript_button_id}").click
     browser.network.wait_for_idle
-
-    save_page_html(browser, dpsst_id, "transcript", date)
+  rescue Ferrum::TimeoutError
+    raise
   rescue StandardError => e
-    save_page_html(browser, dpsst_id, "transcript", date)
     puts "===> Error scraping dpsst id #{dpsst_id}: #{e.inspect}"
+  ensure
+    save_page_html(browser, dpsst_id, "transcript", date)
+    browser.quit
   end
-
-  browser.quit
 end
 
 def output_directory(date)
@@ -132,6 +138,17 @@ def date_suffix
   ''
 end
 
+def scrape_one_officer_affiliation_with_retries(dpsst_id, agency_name, date)
+  3.times do
+    begin
+      scrape_one_officer_affiliation(dpsst_id, agency_name, date)
+      return
+    rescue Ferrum::TimeoutError
+      # Retry
+    end
+  end
+end
+
 def scrape_dpsst
   agency_name = 'Portland Police Bureau'
   date = Date.today.to_s + date_suffix
@@ -143,6 +160,6 @@ def scrape_dpsst
   dpsst_ids = officer_ids
 
   dpsst_ids.each do |dpsst_id|
-    scrape_one_officer_affiliation(dpsst_id, agency_name, date)
+    scrape_one_officer_affiliation_with_retries(dpsst_id, agency_name, date)
   end
 end
