@@ -57,7 +57,7 @@ def scrape_one_officer_affiliation(dpsst_id, agency_name, date)
   puts "Scraping dpsst_id: #{dpsst_id}, agency_name: #{agency_name}"
 
   url = "https://www.bpl-orsnapshot.net/PublicInquiry_CJ/EmployeeSearch.aspx"
-  browser = Ferrum::Browser.new
+  browser = Ferrum::Browser.new(window_size: [1024, 2048], headless: true)
 
   # TODO: Sometimes we get this while waiting for idle::
   #
@@ -111,6 +111,7 @@ def scrape_one_officer_affiliation(dpsst_id, agency_name, date)
     raise
   rescue StandardError => e
     puts "===> Error scraping dpsst id #{dpsst_id}: #{e.inspect}"
+    puts e.backtrace.join("\n")
   ensure
     save_page_html(browser, dpsst_id, "transcript", date)
     browser.quit
@@ -149,15 +150,12 @@ def scrape_one_officer_affiliation_with_retries(dpsst_id, agency_name, date)
   end
 end
 
-def scrape_dpsst
+def scrape_dpsst(dpsst_ids = officer_ids)
   agency_name = 'Portland Police Bureau'
   date = Date.today.to_s + date_suffix
 
-  # Uncomment this and comment the following for debugging
-  # subset of officers.
+  # Uncomment this for debugging a subset of officers.
   # dpsst_ids = ["27981", "33125", "39600", "41483", "55152"]
-
-  dpsst_ids = officer_ids
 
   dpsst_ids.each do |dpsst_id|
     scrape_one_officer_affiliation_with_retries(dpsst_id, agency_name, date)
