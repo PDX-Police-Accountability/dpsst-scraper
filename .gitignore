@@ -1,5 +1,6 @@
 # Specific to this project
 
+/max-id-scanned-data
 /scanned-data
 /scraped-data
 /summary-data
