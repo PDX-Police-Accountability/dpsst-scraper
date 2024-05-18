@@ -1,29 +1,40 @@
 require 'csv'
 
 def du_command(dir_name)
-  # "du -sb #{dir_name}/* | awk '{print $2,$1}' > ../sizes.txt"
   "du -sb #{dir_name}/* | awk '{print $2,$1}' | sort"
 end
 
-def officer_ids(filename = 'input-data/officers.csv')
-  table = CSV.read(filename, { headers: true, col_sep: '|' })
-  table['DPSST'].sort
+def subdirectories(dir_name)
+  cmd = du_command(dir_name)
+
+  `#{cmd}`.split("\n")
 end
 
-def output_directory(date)
-  directory = "scraped-data/#{date}"
+def find_duplicates(dir_name)
+  previous_size = ''
 
-  FileUtils.mkdir_p(directory) unless File.exists?(directory)
+  subdirectories(dir_name).each_with_object([]) do |subdir, duplicates|
+    dirname, dirsize = subdir.split
 
-  directory
-end
+    if dirsize == previous_size
+      duplicates.push(dirname)
+    end
 
-
-def clean_data_dir(dir_name = 'scraped-data')
-  agency_name = 'Portland Police Bureau'
-  date = Date.today.to_s + date_suffix
-
-  dpsst_ids.each do |dpsst_id|
-    scrape_one_officer_affiliation_with_retries(dpsst_id, agency_name, date)
+    previous_size = dirsize
   end
+end
+
+def clean_data_dir(dir_name = './scraped-data')
+  duplicates = find_duplicates(dir_name)
+
+  puts "==> Found #{duplicates.length} directories that are the same size as the previous directory."
+
+  duplicates.each do |duplicate|
+    cmd = "rm -rf #{duplicate}"
+    `#{cmd}`
+  end
+
+  puts "==> Done"
+
+  nil
 end
