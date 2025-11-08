@@ -1,5 +1,58 @@
 #!/bin/bash
 
+
+# Keep 2024 scraped data from the 7th and 20th of each month
+# mkdir scraped-data-2024
+
+# marc@45-33-109-94:~/work/dpsst-scraper/scraped-data$ ls -1d 2024-*-07/
+# 2024-01-07/
+# 2024-02-07/
+# 2024-03-07/
+# 2024-04-07/
+# 2024-06-07/
+# 2024-08-07/
+# 2024-09-07/
+# 2024-11-07/
+# 2024-12-07/
+# marc@45-33-109-94:~/work/dpsst-scraper/scraped-data$ ls -1d 2024-*-20/
+# 2024-01-20/
+# 2024-03-20/
+# 2024-04-20/
+# 2024-05-20/
+# 2024-06-20/
+# 2024-07-20/
+# 2024-09-20/
+# 2024-10-20/
+# 2024-11-20/
+# 2024-12-20/
+# marc@45-33-109-94:~/work/dpsst-scraper/scraped-data$
+
+mv scraped-data/2024-01-07/ scraped-data/scraped-data-2024
+mv scraped-data/2024-02-07/ scraped-data/scraped-data-2024
+mv scraped-data/2024-03-07/ scraped-data/scraped-data-2024
+mv scraped-data/2024-04-07/ scraped-data/scraped-data-2024
+mv scraped-data/2024-06-07/ scraped-data/scraped-data-2024
+mv scraped-data/2024-08-07/ scraped-data/scraped-data-2024
+mv scraped-data/2024-09-07/ scraped-data/scraped-data-2024
+mv scraped-data/2024-11-07/ scraped-data/scraped-data-2024
+mv scraped-data/2024-12-07/ scraped-data/scraped-data-2024
+mv scraped-data/2024-01-20/ scraped-data/scraped-data-2024
+mv scraped-data/2024-03-20/ scraped-data/scraped-data-2024
+mv scraped-data/2024-04-20/ scraped-data/scraped-data-2024
+mv scraped-data/2024-05-20/ scraped-data/scraped-data-2024
+mv scraped-data/2024-06-20/ scraped-data/scraped-data-2024
+mv scraped-data/2024-07-20/ scraped-data/scraped-data-2024
+mv scraped-data/2024-09-20/ scraped-data/scraped-data-2024
+mv scraped-data/2024-10-20/ scraped-data/scraped-data-2024
+mv scraped-data/2024-11-20/ scraped-data/scraped-data-2024
+mv scraped-data/2024-12-20/ scraped-data/scraped-data-2024
+
+# rm -r scraped-data/2024-*
+
+
+
+# TODO: Script this and have it run every N months
+
 # Keep 2022 and 2023 scraped data from the 7th and 20th of each month
 # mkdir scraped-data-2022
 # mkdir scraped-data-2023
@@ -46,41 +99,41 @@
 # 2023-10-20/
 # 2023-12-20/
 
-mv scraped-data/2022-02-07/ scraped-data/scraped-data-2022
-mv scraped-data/2022-03-07/ scraped-data/scraped-data-2022
-mv scraped-data/2022-04-07/ scraped-data/scraped-data-2022
-mv scraped-data/2022-06-07/ scraped-data/scraped-data-2022
-mv scraped-data/2022-07-07/ scraped-data/scraped-data-2022
-mv scraped-data/2022-08-07/ scraped-data/scraped-data-2022
-mv scraped-data/2022-09-07/ scraped-data/scraped-data-2022
-mv scraped-data/2022-10-07/ scraped-data/scraped-data-2022
-mv scraped-data/2022-12-07/ scraped-data/scraped-data-2022
-mv scraped-data/2022-03-20/ scraped-data/scraped-data-2022
-mv scraped-data/2022-04-20/ scraped-data/scraped-data-2022
-mv scraped-data/2022-05-20/ scraped-data/scraped-data-2022
-mv scraped-data/2022-06-20/ scraped-data/scraped-data-2022
-mv scraped-data/2022-07-20/ scraped-data/scraped-data-2022
-mv scraped-data/2022-08-20/ scraped-data/scraped-data-2022
-mv scraped-data/2022-09-20/ scraped-data/scraped-data-2022
-mv scraped-data/2022-10-20/ scraped-data/scraped-data-2022
-mv scraped-data/2022-11-20/ scraped-data/scraped-data-2022
-mv scraped-data/2023-01-07/ scraped-data/scraped-data-2023
-mv scraped-data/2023-04-07/ scraped-data/scraped-data-2023
-mv scraped-data/2023-05-07/ scraped-data/scraped-data-2023
-mv scraped-data/2023-06-07/ scraped-data/scraped-data-2023
-mv scraped-data/2023-07-07/ scraped-data/scraped-data-2023
-mv scraped-data/2023-09-07/ scraped-data/scraped-data-2023
-mv scraped-data/2023-10-07/ scraped-data/scraped-data-2023
-mv scraped-data/2023-12-07/ scraped-data/scraped-data-2023
-mv scraped-data/2023-01-20/ scraped-data/scraped-data-2023
-mv scraped-data/2023-02-20/ scraped-data/scraped-data-2023
-mv scraped-data/2023-03-20/ scraped-data/scraped-data-2023
-mv scraped-data/2023-04-20/ scraped-data/scraped-data-2023
-mv scraped-data/2023-05-20/ scraped-data/scraped-data-2023
-mv scraped-data/2023-06-20/ scraped-data/scraped-data-2023
-mv scraped-data/2023-07-20/ scraped-data/scraped-data-2023
-mv scraped-data/2023-08-20/ scraped-data/scraped-data-2023
-mv scraped-data/2023-09-20/ scraped-data/scraped-data-2023
-mv scraped-data/2023-10-20/ scraped-data/scraped-data-2023
-mv scraped-data/2023-12-20/ scraped-data/scraped-data-2023
+# mv scraped-data/2022-02-07/ scraped-data/scraped-data-2022
+# mv scraped-data/2022-03-07/ scraped-data/scraped-data-2022
+# mv scraped-data/2022-04-07/ scraped-data/scraped-data-2022
+# mv scraped-data/2022-06-07/ scraped-data/scraped-data-2022
+# mv scraped-data/2022-07-07/ scraped-data/scraped-data-2022
+# mv scraped-data/2022-08-07/ scraped-data/scraped-data-2022
+# mv scraped-data/2022-09-07/ scraped-data/scraped-data-2022
+# mv scraped-data/2022-10-07/ scraped-data/scraped-data-2022
+# mv scraped-data/2022-12-07/ scraped-data/scraped-data-2022
+# mv scraped-data/2022-03-20/ scraped-data/scraped-data-2022
+# mv scraped-data/2022-04-20/ scraped-data/scraped-data-2022
+# mv scraped-data/2022-05-20/ scraped-data/scraped-data-2022
+# mv scraped-data/2022-06-20/ scraped-data/scraped-data-2022
+# mv scraped-data/2022-07-20/ scraped-data/scraped-data-2022
+# mv scraped-data/2022-08-20/ scraped-data/scraped-data-2022
+# mv scraped-data/2022-09-20/ scraped-data/scraped-data-2022
+# mv scraped-data/2022-10-20/ scraped-data/scraped-data-2022
+# mv scraped-data/2022-11-20/ scraped-data/scraped-data-2022
+# mv scraped-data/2023-01-07/ scraped-data/scraped-data-2023
+# mv scraped-data/2023-04-07/ scraped-data/scraped-data-2023
+# mv scraped-data/2023-05-07/ scraped-data/scraped-data-2023
+# mv scraped-data/2023-06-07/ scraped-data/scraped-data-2023
+# mv scraped-data/2023-07-07/ scraped-data/scraped-data-2023
+# mv scraped-data/2023-09-07/ scraped-data/scraped-data-2023
+# mv scraped-data/2023-10-07/ scraped-data/scraped-data-2023
+# mv scraped-data/2023-12-07/ scraped-data/scraped-data-2023
+# mv scraped-data/2023-01-20/ scraped-data/scraped-data-2023
+# mv scraped-data/2023-02-20/ scraped-data/scraped-data-2023
+# mv scraped-data/2023-03-20/ scraped-data/scraped-data-2023
+# mv scraped-data/2023-04-20/ scraped-data/scraped-data-2023
+# mv scraped-data/2023-05-20/ scraped-data/scraped-data-2023
+# mv scraped-data/2023-06-20/ scraped-data/scraped-data-2023
+# mv scraped-data/2023-07-20/ scraped-data/scraped-data-2023
+# mv scraped-data/2023-08-20/ scraped-data/scraped-data-2023
+# mv scraped-data/2023-09-20/ scraped-data/scraped-data-2023
+# mv scraped-data/2023-10-20/ scraped-data/scraped-data-2023
+# mv scraped-data/2023-12-20/ scraped-data/scraped-data-2023
 
