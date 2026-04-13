@@ -55,8 +55,6 @@ def scan_one_officer(dpsst_id, agency_name, date)
     input.focus.type(dpsst_id)
     browser.at_css("#cmdSearch").click # NOTE: Have seen Ferrum::TimeoutError here.
 
-    browser.network.wait_for_idle
-
     save_page_html(browser, dpsst_id, "index", date)
   rescue Ferrum::TimeoutError
     raise

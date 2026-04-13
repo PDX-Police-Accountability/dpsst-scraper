@@ -75,8 +75,6 @@ def scrape_one_officer_affiliation(dpsst_id, agency_name, date)
     input.focus.type(dpsst_id)
     browser.at_css("#cmdSearch").click # NOTE: Have seen Ferrum::TimeoutError here.
 
-    browser.network.wait_for_idle
-
     row_index = 1
     rows = browser.css("table#gvwEmployees tr")
     rows.each_with_index do |row, index|
@@ -93,8 +91,6 @@ def scrape_one_officer_affiliation(dpsst_id, agency_name, date)
     cell = row.css("td").first
     cell.click
 
-    browser.network.wait_for_idle
-
     transcript_button_id = "ContentPlaceHolder1_cmdProfile"
 
     # You have to hit the Transcript button twice, for whatever strange reason.
@@ -104,9 +100,7 @@ def scrape_one_officer_affiliation(dpsst_id, agency_name, date)
     # 3. Save the page html
 
     browser.at_css("input\##{transcript_button_id}").click
-    browser.network.wait_for_idle
     browser.at_css("input\##{transcript_button_id}").click
-    browser.network.wait_for_idle
   rescue Ferrum::TimeoutError
     raise
   rescue StandardError => e
